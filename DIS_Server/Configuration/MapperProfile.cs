@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using DIS_data.Entity;
 using DIS_Server.DTO;
 using DIS_Server.Models;
 
@@ -14,6 +11,8 @@ namespace DIS_Server.Configuration
         {
             CreateMap<UserDto, User>();
             CreateMap<User, UserDto>();
+            CreateMap<User, UserEntity>();
+            CreateMap<UserEntity, User>();
         }
     }
 }
