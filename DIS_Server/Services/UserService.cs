@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
+using DIS_data.Entity;
+using DIS_data.Repository;
 using DIS_Server.Models;
 
 namespace DIS_Server.Services
@@ -16,26 +15,30 @@ namespace DIS_Server.Services
     public class UserService: IUserService
     {
         protected IMapper Mapper;
-        public UserService(IMapper mapper)
+        protected IUserRepository Repository;
+        public UserService(IMapper mapper, IUserRepository repository)
         {
             Mapper = mapper;
+            Repository = repository;
         }
 
 
-        //todo change to connection to db
+        
         public async Task<User> Get(string login, string password, bool hashed = false)
         {
-            if (login == "ababa" && password == "qwerty")
+            var entity = await Repository.Get(login);
+            if (entity.Password == password)
             {
-                return new User() {Login = "ababa", Password = "qwerty", Role = "user, admin"};
+                return Mapper.Map<User>(entity);
             }
             return null;
         }
 
         public async Task<User> Create(User user)
         {
-            //todo change to connection to db
-            return user;
+            var userEntity = Mapper.Map<UserEntity>(user);
+            var entity = await Repository.Create(userEntity);
+            return Mapper.Map<User>(entity);
         }
     }
 }

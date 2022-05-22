@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -105,8 +104,8 @@ namespace DIS_Server.Controllers
         {
 
             var model = Mapper.Map<User>(user);
-            var created_model =  await Service.Create(model);
-            var dto = Mapper.Map<UserDto>(created_model);
+            var createdModel =  await Service.Create(model);
+            var dto = Mapper.Map<UserDto>(createdModel);
             dto.Password = "hidden";
             return Created("", dto);
         }

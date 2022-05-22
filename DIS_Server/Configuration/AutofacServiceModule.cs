@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using DIS_data.Repository;
 using DIS_Server.Services;
 
 namespace DIS_Server.Configuration
@@ -13,6 +14,8 @@ namespace DIS_Server.Configuration
         {
             builder.RegisterType<UserService>()
                 .As<IUserService>().InstancePerLifetimeScope();
+            builder.RegisterType<UserRepository>()
+                .As<IUserRepository>().InstancePerLifetimeScope();
         }
     }
 }
