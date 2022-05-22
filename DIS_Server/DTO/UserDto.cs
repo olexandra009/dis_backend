@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 
 namespace DIS_Server.DTO
 {
-    public class LoginUserDto
+    public class UserDto
     {
         public string Login { get; set; }
         public string Password { get; set; }
+        public string Role { get; set; }
+
     }
 }
