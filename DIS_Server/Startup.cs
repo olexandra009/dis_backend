@@ -45,8 +45,7 @@ namespace DIS_Server
                 });
             #endregion
 
-            var database = Environment.GetEnvironmentVariable("DATABASE_URL") ?? Configuration.GetConnectionString("ConnectionString");
-           
+            var database = Environment.GetEnvironmentVariable("DATABASE_URL") ??Configuration.GetConnectionString("Connection");
             ConnectionStringObject mainObject = new ConnectionStringObject(database);
             
             string connection =
