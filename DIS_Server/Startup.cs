@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
+using DIS_data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using DIS_Server.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DIS_Server
@@ -41,11 +45,20 @@ namespace DIS_Server
                 });
             #endregion
 
+            var database = Environment.GetEnvironmentVariable("DATABASE_URL") ?? Configuration.GetConnectionString("ConnectionString");
+           
+            ConnectionStringObject mainObject = new ConnectionStringObject(database);
+            
+            string connection =
+                $"host={mainObject.Host};port={mainObject.Port};database={mainObject.Database};user id={mainObject.UserId}; password={mainObject.Password};Pooling=true;SSLMode=Require; TrustServerCertificate=True;";
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddDbContext<DisContext>(options => options.UseNpgsql(connection));
+            
             services.AddAutoMapper((configuration) => configuration.AddProfile<MapperProfile>(),
                 typeof(Startup)); // scan and register automapper profiles in this assembly
 
-
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
