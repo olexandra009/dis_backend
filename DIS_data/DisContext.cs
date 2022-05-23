@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DIS_data
 {
-    class DisContext:DbContext
+    public class DisContext:DbContext
     {
         public DisContext()
         {

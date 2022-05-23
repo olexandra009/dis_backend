@@ -36,6 +36,8 @@ namespace DIS_Server.Services
 
         public async Task<User> Create(User user)
         {
+            var existed = await Repository.Get(user.Login);
+            if (existed != null) return null;
             var userEntity = Mapper.Map<UserEntity>(user);
             var entity = await Repository.Create(userEntity);
             return Mapper.Map<User>(entity);

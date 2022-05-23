@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DIS_data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DIS_data.Repository
 {
@@ -14,14 +15,25 @@ namespace DIS_data.Repository
     }
     public class UserRepository:IUserRepository
     {
-        //todo change to database connection
+        protected readonly DbContext DbContext;
+
+        public UserRepository(DisContext disContext)
+        {
+            DbContext = disContext;
+        }
+
+  
         public async Task<UserEntity> Get(string login)
         {
-            return new UserEntity() {Login = "ababa", Password = "qwerty", Role = "user,admin"};
+            var keys = new object[] { login };
+            return await DbContext.Set<UserEntity>().FindAsync(keys);
+            // return new UserEntity() {Login = "ababa", Password = "qwerty", Role = "user,admin"};
         }
 
         public async Task<UserEntity> Create(UserEntity user)
         {
+            DbContext.Set<UserEntity>().Add(user);
+            await DbContext.SaveChangesAsync();
             return user;
         }
     }

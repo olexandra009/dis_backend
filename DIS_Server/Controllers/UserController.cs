@@ -105,6 +105,7 @@ namespace DIS_Server.Controllers
 
             var model = Mapper.Map<User>(user);
             var createdModel =  await Service.Create(model);
+            if (createdModel == null) return Conflict($"user with login {user} exists");
             var dto = Mapper.Map<UserDto>(createdModel);
             dto.Password = "hidden";
             return Created("", dto);
