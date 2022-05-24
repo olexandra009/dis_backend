@@ -14,4 +14,5 @@ RUN dotnet publish -c release -o /app -r linux-x64 --self-contained false --no-r
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal-amd64
 WORKDIR /app
 COPY --from=build /app ./
-ENTRYPOINT ["./DIS_Server"]
+
+CMD ASPNETCORE_URLS=http://*:$PORT ./DIS_Server
