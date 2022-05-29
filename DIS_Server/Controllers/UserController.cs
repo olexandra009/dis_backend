@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using AutoMapper;
 using DIS_Server.Configuration;
 using DIS_Server.DTO;
@@ -19,11 +20,15 @@ namespace DIS_Server.Controllers
     {
         protected readonly IMapper Mapper;
         protected readonly IUserService Service;
-        public UserController(IMapper mapper, IUserService service)
+        protected readonly ISendEmailService EmailService;
+
+        public UserController(IMapper mapper, IUserService service, ISendEmailService emailService)
         {
             Mapper = mapper;
             Service = service;
+            EmailService = emailService;
         }
+
         [HttpPost("/login")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -64,6 +69,7 @@ namespace DIS_Server.Controllers
                 access_token = encodedJwt,
                 user = userDto,
             };
+
             return new JsonResult(response);
         }
 
@@ -73,7 +79,7 @@ namespace DIS_Server.Controllers
             User person = Service.Get(login, password, hashed).Result;
             if (person != null)
             {
-                //if (!person.EmailConfirm) throw new AccessViolationException("Email is not confirm!");
+                if (!person.IsUserConfitmed) throw new AccessViolationException("Email is not confirm!");
                 var roles = person.Role.Split(", ");
                 var claims = new List<Claim>
                 {
@@ -102,13 +108,33 @@ namespace DIS_Server.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult> Registration([FromBody] UserDto user)
         {
-
+            user.IsUserConfitmed = true;
             var model = Mapper.Map<User>(user);
             var createdModel =  await Service.Create(model);
             if (createdModel == null) return Conflict($"user with login {user.Login} exists");
             var dto = Mapper.Map<UserDto>(createdModel);
             dto.Password = "hidden";
+            //var code = HttpUtility.UrlEncode(createdModel.Login.GetHashCode().ToString());
+            //var url = $"https://localhost:44365/#/confirm/{createdModel.Login}/{code}";
+            //var url = "https://" + $"localhost:44365/confirm?id={createdModel.Login}&code={code}";
+            //await EmailService.SendConfirmLetter(createdModel.Login, createdModel.Login, url);
             return Created("", dto);
+        }
+
+        [HttpGet("/confirm")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> Confirm([FromQuery] string id, [FromQuery] string code)
+        {
+            var user = await Service.Get(id);
+            if (HttpUtility.UrlEncode(user.Login.GetHashCode().ToString()) == code)
+            {
+                user.IsUserConfitmed = true;
+                Service.Update(user);
+                return Ok();
+            }
+            return NotFound();
         }
 
         [HttpGet("/isLogin")]

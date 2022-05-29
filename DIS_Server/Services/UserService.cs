@@ -8,11 +8,13 @@ namespace DIS_Server.Services
 {
     public interface IUserService
     {
-        public Task<User> Get(string login, string password, bool hashed = false);
+        public Task<User> Get(string login);
+        public Task<User> Get(string login, string password = null, bool hashed = false);
         public Task<User> Create(User user);
+        public void Update(User user);
 
     }
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         protected IMapper Mapper;
         protected IUserRepository Repository;
@@ -22,8 +24,11 @@ namespace DIS_Server.Services
             Repository = repository;
         }
 
+        public void Update(User user)
+        {
+            Repository.Update(Mapper.Map<UserEntity>(user));
+        }
 
-        
         public async Task<User> Get(string login, string password, bool hashed = false)
         {
             var entity = await Repository.Get(login);
@@ -32,6 +37,13 @@ namespace DIS_Server.Services
                 return Mapper.Map<User>(entity);
             }
             return null;
+        }
+
+        public async Task<User> Get(string login)
+        {
+            var entity = await Repository.Get(login);
+
+            return Mapper.Map<User>(entity);
         }
 
         public async Task<User> Create(User user)

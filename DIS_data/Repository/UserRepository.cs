@@ -12,7 +12,9 @@ namespace DIS_data.Repository
     {
         public Task<UserEntity> Get(string login);
         public Task<UserEntity> Create(UserEntity user);
+        public void Update(UserEntity user);
     }
+
     public class UserRepository:IUserRepository
     {
         protected readonly DbContext DbContext;
@@ -22,7 +24,13 @@ namespace DIS_data.Repository
             DbContext = disContext;
         }
 
-  
+        public async void Update(UserEntity user)
+        {
+            DbContext.Attach<UserEntity>(user);
+            DbContext.Entry(user).State = EntityState.Modified;
+            await DbContext.SaveChangesAsync();
+        }
+
         public async Task<UserEntity> Get(string login)
         {
             var keys = new object[] { login };
