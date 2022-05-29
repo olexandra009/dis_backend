@@ -16,6 +16,12 @@ namespace DIS_Server.Configuration
                 .As<IUserService>().InstancePerLifetimeScope();
             builder.RegisterType<UserRepository>()
                 .As<IUserRepository>().InstancePerLifetimeScope();
+
+            builder.RegisterType<HistoryRepository>()
+                .As<IHistoryRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<HistoryService>()
+                .As<IHistoryService>().InstancePerLifetimeScope();
+
             builder.RegisterType<SendEmailService>()
                 .As<ISendEmailService>().InstancePerLifetimeScope();
         }

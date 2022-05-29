@@ -13,6 +13,12 @@ namespace DIS_Server.Configuration
             CreateMap<User, UserDto>();
             CreateMap<User, UserEntity>();
             CreateMap<UserEntity, User>();
+
+
+            CreateMap<HistoryDto, History>();
+            CreateMap<History, HistoryDto>();
+            CreateMap<History, HistoryTransactionEntity>();
+            CreateMap<HistoryTransactionEntity, History>();
         }
     }
 }
