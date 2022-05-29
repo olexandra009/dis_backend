@@ -18,11 +18,13 @@ namespace DIS_data
 
        
         public virtual DbSet<UserEntity> Users { get; set; }
+        public virtual DbSet<HistoryTransactionEntity> HistoryTransaction{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new HistoryEntityConfiguration());
         }
     }
 }

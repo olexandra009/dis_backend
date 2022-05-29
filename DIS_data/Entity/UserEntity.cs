@@ -1,4 +1,6 @@
-﻿namespace DIS_data.Entity
+﻿using System.Collections.Generic;
+
+namespace DIS_data.Entity
 {
     public class UserEntity
     {
@@ -6,5 +8,7 @@
         public string Password { get; set; }
         public string Role { get; set; }
         public bool IsUserConfitmed { get; set; }
+
+        public List<HistoryTransactionEntity> Transactions { get; set; }
     }
 }
