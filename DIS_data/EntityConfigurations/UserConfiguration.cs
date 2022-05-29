@@ -14,6 +14,11 @@ namespace DIS_data.EntityConfigurations
             builder.Property(n => n.Password).HasColumnName("Password").IsRequired();
             builder.Property(n => n.Role).HasColumnName("Role").IsRequired();
             builder.Property(n => n.IsUserConfitmed).HasColumnName("Confirmed").IsRequired();
+
+            builder.HasMany(e => e.Transactions)
+                .WithOne(e => e.User)
+                .HasForeignKey(e => e.UserLogin).IsRequired(false);
         }
+
     }
 }
