@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using DIS_data.Entity;
 using DIS_data.Repository;
 using DIS_Server.Models;
 
@@ -10,6 +11,8 @@ namespace DIS_Server.Services
 {
     public interface IHistoryService
     {
+
+        public Task<History> Create(History history);
         public Task<History> Get(string login, DateTime time);
         public Task<History> Get(Guid id);
 
@@ -28,6 +31,14 @@ namespace DIS_Server.Services
             Repository = repository;
             Mapper = mapper;
         }
+
+        public async Task<History> Create(History history)
+        {
+            history.TransactionId = Guid.NewGuid();
+            var result = await Repository.Create(Mapper.Map<HistoryTransactionEntity>(history));
+            return history;
+        }
+
         public async Task<History> Get(string login, DateTime time)
         {
             var entity = await Repository.Get(login, time);

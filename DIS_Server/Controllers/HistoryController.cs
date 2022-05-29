@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DIS_Server.DTO;
+using DIS_Server.Models;
 using DIS_Server.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +19,25 @@ namespace DIS_Server.Controllers
         {
             Mapper = mapper;
             Service = historyService;
+        }
+
+        [HttpPost("/create")]
+        //  [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<HistoryDto>> Create([FromBody] HistoryDto history)
+        {
+            History result;
+            try
+            {
+                result = await Service.Create(Mapper.Map<History>(history));
+            }
+            catch (Exception)
+            {
+                return Conflict();
+            }
+            return Mapper.Map<HistoryDto>(result);
         }
 
         [HttpGet("/get")]

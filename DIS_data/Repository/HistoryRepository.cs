@@ -18,6 +18,8 @@ namespace DIS_data.Repository
         public Task<List<HistoryTransactionEntity>> GetList(DateTime time);
 
         public Task<List<HistoryTransactionEntity>> GetList();
+
+        public Task<HistoryTransactionEntity> Create(HistoryTransactionEntity user);
     }
     public class HistoryRepository: IHistoryRepository
     {
@@ -66,6 +68,13 @@ namespace DIS_data.Repository
         public async Task<List<HistoryTransactionEntity>> GetList()
         {
             return await DbContext.Set<HistoryTransactionEntity>().ToListAsync();
+        }
+
+        public async Task<HistoryTransactionEntity> Create(HistoryTransactionEntity transaction)
+        {
+            await DbContext.Set<HistoryTransactionEntity>().AddAsync(transaction);
+            await DbContext.SaveChangesAsync();
+            return transaction;
         }
     }
 }
