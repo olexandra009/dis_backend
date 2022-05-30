@@ -3,10 +3,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DIS_data.Migrations
 {
-    public partial class History : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Login = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<string>(type: "text", nullable: false),
+                    Confirmed = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Login);
+                });
+
             migrationBuilder.CreateTable(
                 name: "History",
                 columns: table => new
@@ -35,6 +49,9 @@ namespace DIS_data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "History");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }
