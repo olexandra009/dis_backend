@@ -35,6 +35,7 @@ namespace DIS_Server.Services
         public async Task<History> Create(History history)
         {
             history.TransactionId = Guid.NewGuid();
+            history.TransactionTime = DateTime.Now;
             var result = await Repository.Create(Mapper.Map<HistoryTransactionEntity>(history));
             return history;
         }
